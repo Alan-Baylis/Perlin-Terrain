@@ -24,8 +24,15 @@ public class MapGenerator : MonoBehaviour {
 
     public TerrainType[] regions;
 
+    private float[,] noiseMap;
+
+    // TEMP
+    void Start() {
+        noiseMap = Noise.GenerateNoiseMap(mapSize, mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+        GenerateMap();
+    }
+
     public void GenerateMap() {
-        float[,] noiseMap = Noise.GenerateNoiseMap(mapSize, mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
 
         Color[] colorMap = new Color[mapSize * mapSize];
         for (int y = 0; y < mapSize; ++y) {
@@ -49,6 +56,14 @@ public class MapGenerator : MonoBehaviour {
             display.DrawMesh(MeshGenerator.GenerateTerrainMesh(noiseMap, heightMultiplier, heightCurve, lod), TextureGenerator.TextureFromColorMap(colorMap, mapSize, mapSize));
         }
         
+    }
+
+    public void SetNoiseMap(float [,] noiseMap) {
+        this.noiseMap = noiseMap;
+    }
+
+    public float[,] GetNoiseMap() {
+        return noiseMap;
     }
 
     void OnValidate() {
