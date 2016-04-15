@@ -4,7 +4,7 @@ using System.Collections;
 public static class TextureGenerator {
 
     public static Texture2D TextureFromColorMap(Color[] colorMap, int width, int height) {
-        Texture2D texture = new Texture2D(width, height);
+        Texture2D texture = new Texture2D(width, height, TextureFormat.RGBA32, false);
         texture.filterMode = FilterMode.Bilinear;
         texture.wrapMode = TextureWrapMode.Clamp;
         texture.SetPixels(colorMap);
