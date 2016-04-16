@@ -21,8 +21,12 @@ public class Clouds : MonoBehaviour {
     public float contrastHigh = 1.0f;
     public float brightnessOffset = 0.0f;
 
-    public float xSpeed = 0.001f;
-    public float ySpeed = 0.0005f;
+    public float xSpeed = 0.1f;
+    public float ySpeed = 0.05f;
+
+    private Color[] colorMap;
+    private float r, g, b;
+    private bool canOffset = true;
 
 	void Start () {
         texture = new Texture2D(size, size);
@@ -30,18 +34,24 @@ public class Clouds : MonoBehaviour {
 
         textureRenderer = GetComponent<MeshRenderer>();
         textureRenderer.material.mainTexture = texture;
-        GenerateClouds(size, size);
-	}
+
+        colorMap = new Color[size * size];
+        r = Mathf.Clamp(cloudColor.r + brightnessOffset, 0.0f, 1.0f);
+        g = Mathf.Clamp(cloudColor.g + brightnessOffset, 0.0f, 1.0f);
+        b = Mathf.Clamp(cloudColor.b + brightnessOffset, 0.0f, 1.0f);
+    }
 	
 	void Update () {
-        textureRenderer.material.mainTextureOffset = new Vector2(textureRenderer.material.mainTextureOffset.x + xSpeed,
-                                                                 textureRenderer.material.mainTextureOffset.y + ySpeed);
-        textureRenderer.transform.localScale = new Vector3(texture.width, 1.0f, texture.height);
+        if (canOffset) {
+            canOffset = false;
+            offset = new Vector2(offset.x + xSpeed, offset.y + ySpeed);
+            StartCoroutine(GenerateClouds(size, size));
+        }
     }
 
-    private void GenerateClouds(int width, int height) {
+    IEnumerator GenerateClouds(int width, int height) {
+        yield return null;
         float[,] noiseMap = Noise.GenerateNoiseMap(width, height, seed, scale, octaves, persistance, lacunarity, offset);
-        Color[] colorMap = new Color[width * height];
         float noiseValue;
 
         for (int y = 0; y < height; ++y) {
@@ -49,16 +59,12 @@ public class Clouds : MonoBehaviour {
                 noiseValue = noiseMap[y, x];
                 noiseValue = Mathf.Clamp(noiseValue, contrastLow, contrastHigh + contrastLow) - contrastLow;
                 noiseValue = Mathf.Clamp(noiseValue, 0.0f, 1.0f);
-
-                float r = Mathf.Clamp(cloudColor.r + brightnessOffset, 0.0f, 1.0f);
-                float g = Mathf.Clamp(cloudColor.g + brightnessOffset, 0.0f, 1.0f);
-                float b = Mathf.Clamp(cloudColor.b + brightnessOffset, 0.0f, 1.0f);
-
                 colorMap[width * y + x] = new Color(r, g, b, noiseValue);
             }
         }
 
         texture.SetPixels(colorMap);
         texture.Apply();
+        canOffset = true;
     }
 }
