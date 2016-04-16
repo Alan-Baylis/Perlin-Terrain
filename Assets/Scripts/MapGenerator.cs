@@ -26,18 +26,18 @@ public class MapGenerator : MonoBehaviour {
 
     private float[,] noiseMap;
 
-    private bool started = false;
+    private bool recompute = true;
 
     // TEMP
     void Start() {
-        started = true;
         noiseMap = Noise.GenerateNoiseMap(mapSize, mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
         GenerateMap();
     }
 
     public void GenerateMap() {
-        if (!started) {
+        if (recompute) {
             noiseMap = Noise.GenerateNoiseMap(mapSize, mapSize, seed, noiseScale, octaves, persistance, lacunarity, offset);
+            recompute = false;
         }
         
         Color[] colorMap = new Color[mapSize * mapSize];
@@ -89,6 +89,10 @@ public class MapGenerator : MonoBehaviour {
             lod = 0;
         }
 
+    }
+
+    public void SetRecompute(bool value) {
+        recompute = value;
     }
 }
 

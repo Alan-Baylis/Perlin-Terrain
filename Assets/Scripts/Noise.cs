@@ -35,8 +35,8 @@ public static class Noise {
                 float noiseHeight = 0.0f;
 
                 for (int i = 0; i < octaves; ++i) {
-                    float sampleX = (x - halfWidth) / scale * frequency + octaveOffsets[i].x;
-                    float sampleY = (y - halfHeight) / scale * frequency + octaveOffsets[i].y;
+                    float sampleX = (x - halfWidth + octaveOffsets[i].x) / scale * frequency;
+                    float sampleY = (y - halfHeight - octaveOffsets[i].y) / scale * frequency;
 
                     float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2.0f - 1.0f;
                     noiseHeight += perlinValue * amplitude;

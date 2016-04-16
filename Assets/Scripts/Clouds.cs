@@ -27,6 +27,7 @@ public class Clouds : MonoBehaviour {
     private Color[] colorMap;
     private float r, g, b;
     private bool canOffset = true;
+    private bool shouldUpdate = false;
 
 	void Start () {
         texture = new Texture2D(size, size);
@@ -42,6 +43,12 @@ public class Clouds : MonoBehaviour {
     }
 	
 	void Update () {
+        if (shouldUpdate) {
+            r = Mathf.Clamp(cloudColor.r + brightnessOffset, 0.0f, 1.0f);
+            g = Mathf.Clamp(cloudColor.g + brightnessOffset, 0.0f, 1.0f);
+            b = Mathf.Clamp(cloudColor.b + brightnessOffset, 0.0f, 1.0f);
+        }
+
         if (canOffset) {
             canOffset = false;
             offset = new Vector2(offset.x + xSpeed, offset.y + ySpeed);
@@ -67,4 +74,9 @@ public class Clouds : MonoBehaviour {
         texture.Apply();
         canOffset = true;
     }
+
+    public void SetShouldUpdate(bool value) {
+        shouldUpdate = value;
+    }
+
 }
