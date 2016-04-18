@@ -47,6 +47,7 @@ public class Clouds : MonoBehaviour {
             r = Mathf.Clamp(cloudColor.r + brightnessOffset, 0.0f, 1.0f);
             g = Mathf.Clamp(cloudColor.g + brightnessOffset, 0.0f, 1.0f);
             b = Mathf.Clamp(cloudColor.b + brightnessOffset, 0.0f, 1.0f);
+            shouldUpdate = false;
         }
 
         if (canOffset) {

@@ -6,14 +6,17 @@ public class UIManager : MonoBehaviour {
 
     public GameObject terrainPanel;
     public GameObject cloudsPanel;
+    public GameObject brushPanel;
 
     private MapGenerator mapGenerator;
     private Clouds cloudGenerator;
+    private Brush brushScript;
     private bool menuOpened;
     
 	void Start () {
         mapGenerator = GetComponent<MapGenerator>();
         cloudGenerator = GameObject.Find("Clouds").GetComponent<Clouds>();
+        brushScript = Camera.main.GetComponent<Brush>();
         menuOpened = false;
 	}
 
@@ -21,9 +24,11 @@ public class UIManager : MonoBehaviour {
         if (menuOpened) {
             terrainPanel.SetActive(false);
             cloudsPanel.SetActive(false);
+            brushPanel.SetActive(false);
         } else {
             terrainPanel.SetActive(true);
             cloudsPanel.SetActive(false);
+            brushPanel.SetActive(false);
         }
         menuOpened = !menuOpened;
     }
@@ -32,17 +37,27 @@ public class UIManager : MonoBehaviour {
         menuOpened = true;
         terrainPanel.SetActive(true);
         cloudsPanel.SetActive(false);
+        brushPanel.SetActive(false);
     }
 
     public void CloudsButtonPressed() {
         menuOpened = true;
         terrainPanel.SetActive(false);
         cloudsPanel.SetActive(true);
+        brushPanel.SetActive(false);
+    }
+
+    public void BrushButtonPressed() {
+        menuOpened = true;
+        terrainPanel.SetActive(false);
+        cloudsPanel.SetActive(false);
+        brushPanel.SetActive(true);
     }
 	
     /****************************************************************************************************************************
         TERRAIN SECTION
     ****************************************************************************************************************************/
+
 	public void ScaleEdited(InputField input) {
         mapGenerator.SetRecompute(true);
         mapGenerator.noiseScale = float.Parse(input.text);
@@ -166,6 +181,22 @@ public class UIManager : MonoBehaviour {
         Color old = cloudGenerator.cloudColor;
         cloudGenerator.cloudColor = new Color(old.r, old.g, input.value);
         cloudGenerator.SetShouldUpdate(true);
+    }
+
+    /****************************************************************************************************************************
+        BRUSH SECTION
+    ****************************************************************************************************************************/
+
+    public void BrushSizeEdited(InputField input) {
+        brushScript.brushSize = int.Parse(input.text);
+    }
+
+    public void BrushIncreaseEdited(Slider input) {
+        brushScript.increaseAmount = input.value;
+    }
+
+    public void BrushDecreaseEdited(Slider input) {
+        brushScript.decreaseAmount = input.value;
     }
 
 }

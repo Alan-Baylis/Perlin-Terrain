@@ -5,13 +5,15 @@ public class Brush : MonoBehaviour {
 
     private MapGenerator mapGenerator;
     public int brushSize = 10;
+    public float increaseAmount = 0.01f;
+    public float decreaseAmount = 0.01f;
 
     void Start() {
         mapGenerator = GameObject.Find("Map Generator").GetComponent<MapGenerator>();
     }
 
 	void Update () {
-	    if (Input.GetMouseButton(0)) {
+	    if (Input.GetMouseButton(0) && !Input.GetKey(KeyCode.LeftAlt)) {
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rayHit;
             LayerMask terrainMask = LayerMask.GetMask("Terrain");
@@ -21,7 +23,7 @@ public class Brush : MonoBehaviour {
                 int ty = 241 - (int)((rayHit.point.z + (width / 2.0f)) / width * 241);
                 IncreaseHeight(tx, ty); 
             }
-        } else if (Input.GetMouseButton(1)) {
+        } else if (Input.GetMouseButton(1) && !Input.GetKey(KeyCode.LeftAlt)) {
             Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rayHit;
             LayerMask terrainMask = LayerMask.GetMask("Terrain");
@@ -42,7 +44,7 @@ public class Brush : MonoBehaviour {
                     if (tx + i >= 0 && tx + i < 241 && ty + j >= 0 && ty + j < 241) {
                         int sum = Mathf.Abs(i) + Mathf.Abs(j);
 
-                        float inc = 0.01f * ((float)(brushSize - sum) / brushSize);
+                        float inc = increaseAmount * ((float)(brushSize - sum) / brushSize);
                         nm[tx + i, ty + j] += inc;
                         if (nm[tx + i, ty + j] > 1.0f) {
                             nm[tx + i, ty + j] = 1.0f;
@@ -64,7 +66,7 @@ public class Brush : MonoBehaviour {
                     if (tx + i >= 0 && tx + i < 241 && ty + j >= 0 && ty + j < 241) {
                         int sum = Mathf.Abs(i) + Mathf.Abs(j);
 
-                        float dec = 0.01f * ((float)(brushSize - sum) / brushSize);
+                        float dec = decreaseAmount * ((float)(brushSize - sum) / brushSize);
                         nm[tx + i, ty + j] -= dec;
                         if (nm[tx + i, ty + j] < 0.0f) {
                             nm[tx + i, ty + j] = 0.0f;
